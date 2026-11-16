@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="MKT 3200 Workplace Decision Coach — interactive training based on Book 3 and Book 4 concepts.">
+<title>Workplace Decision Coach | MKT 3200</title>
+<style>
+:root{
+  --bg:#09111f; --panel:#101a2e; --panel2:#16223a; --panel3:#0d1628;
+  --text:#f8fafc; --muted:#b8c4d8; --line:#2c3b5d;
+  --accent:#55d5ff; --accent2:#8b5cf6; --good:#22c55e; --bad:#ef4444; --warn:#f59e0b;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; min-height:100vh; color:var(--text);
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:
+    radial-gradient(circle at 90% 0%,rgba(139,92,246,.22),transparent 28%),
+    radial-gradient(circle at 0% 10%,rgba(85,213,255,.14),transparent 22%),
+    linear-gradient(180deg,#09111f,#0a1323 60%,#08101d);
+}
+button,input{font:inherit}
+button:focus-visible,input:focus-visible{outline:3px solid rgba(85,213,255,.4);outline-offset:2px}
+.shell{max-width:900px;margin:0 auto;padding:16px}
+.panel{
+  background:rgba(16,26,46,.96);border:1px solid var(--line);border-radius:24px;
+  box-shadow:0 22px 55px rgba(0,0,0,.28);padding:24px;margin:18px 0;
+}
+.hero{padding:30px}
+.badge{
+  display:inline-flex;align-items:center;gap:7px;padding:8px 12px;border-radius:999px;
+  border:1px solid rgba(85,213,255,.35);background:rgba(85,213,255,.09);
+  color:#c5f3ff;font-size:13px;font-weight:800
+}
+h1{font-size:clamp(34px,7vw,60px);line-height:1.02;margin:15px 0 12px}
+h2{margin:0 0 10px}
+h3{margin:0 0 8px}
+p{line-height:1.58}
+.muted{color:var(--muted)}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}
+.mini{background:var(--panel3);border:1px solid var(--line);border-radius:16px;padding:14px;text-align:center}
+.mini strong{font-size:21px}
+.instructions{
+  background:var(--panel3);border:1px solid var(--line);border-radius:17px;
+  padding:16px;margin:18px 0;text-align:left
+}
+.instructions ol{margin:8px 0 0;padding-left:22px}
+.instructions li{margin:6px 0;color:var(--muted)}
+.objectives{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.objective{padding:12px;border:1px solid var(--line);border-radius:14px;background:#111c31}
+label{display:block;font-size:14px;color:var(--muted);margin:14px 0 7px}
+input{
+  width:100%;padding:14px 15px;border-radius:14px;border:1px solid var(--line);
+  background:#0c1527;color:var(--text);font-size:16px
+}
+button{
+  width:100%;border:none;border-radius:14px;padding:15px 16px;font-size:16px;
+  font-weight:850;cursor:pointer;transition:.18s ease
+}
+button:hover{transform:translateY(-1px)}
+.primary{background:linear-gradient(90deg,var(--accent),#60a5fa);color:#07111f}
+.secondary{background:#202d49;color:var(--text);border:1px solid var(--line)}
+.choice{
+  text-align:left;background:#17243c;color:var(--text);border:1px solid var(--line);
+  margin:8px 0;font-weight:700
+}
+.choice:hover{border-color:#667ca8}
+.choice:disabled{cursor:default;transform:none}
+.correct{border-color:var(--good)!important;background:rgba(34,197,94,.13)!important}
+.wrong{border-color:var(--bad)!important;background:rgba(239,68,68,.13)!important}
+.hidden{display:none!important}
+.topline{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.pill{padding:7px 10px;border:1px solid var(--line);border-radius:999px;background:#0c1527;font-size:13px}
+.progress{height:10px;background:#0c1527;border-radius:999px;overflow:hidden;margin:12px 0 22px}
+.progress>div{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .3s ease}
+.feedback{
+  display:none;margin-top:15px;padding:16px;border:1px solid var(--line);border-radius:16px;background:#0c1527
+}
+.feedback.show{display:block}
+.concept,.why{
+  margin-top:11px;padding:11px 12px;border-radius:10px;background:rgba(85,213,255,.07);
+  border-left:4px solid var(--accent)
+}
+.why{background:rgba(139,92,246,.08);border-left-color:var(--accent2)}
+.answerNote{font-size:13px;color:#d7e4f6;margin-top:10px}
+.scoreBig{font-size:72px;font-weight:950;line-height:1;margin:14px 0}
+.resultGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}
+.stat{background:var(--panel3);border:1px solid var(--line);border-radius:16px;padding:14px;text-align:left}
+.bar{height:9px;background:#1a2740;border-radius:999px;overflow:hidden;margin-top:8px}
+.bar>div{height:100%;background:linear-gradient(90deg,var(--accent),var(--good))}
+.reviewCard{margin-top:10px;padding:12px;border-radius:12px;background:#111c31;border:1px solid var(--line)}
+.certificate{
+  margin-top:18px;padding:24px;border-radius:20px;border:2px solid rgba(85,213,255,.35);
+  background:linear-gradient(135deg,#0d172a,#111e35);text-align:center
+}
+.certificate .name{font-size:28px;font-weight:900;margin:10px 0}
+.certificate .certScore{font-size:38px;font-weight:950;color:#bcefff}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.footer{padding:8px 0 24px;text-align:center;color:#7d8da9;font-size:12px}
+.small{font-size:13px}
+@media(max-width:650px){
+  .shell{padding:11px}.panel{padding:17px;border-radius:18px}.hero{padding:22px}
+  .grid3,.resultGrid,.objectives,.actions{grid-template-columns:1fr}
+}
+@media print{
+  body{background:white;color:black}
+  .shell>*:not(#results){display:none!important}
+  #results{display:block!important}
+  #results .panel{box-shadow:none;border:none;background:white}
+  #results .resultGrid,#results .coachBlock,#results .actions,#results .badge,#results #summary{display:none!important}
+  .certificate{border:3px solid #333;background:white;color:black;margin-top:40px}
+  .certificate .certScore{color:black}
+  .footer{display:none}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<section id="start" class="panel hero">
+  <span class="badge">MKT 3200 • Books 3 & 4</span>
+  <h1>Workplace Decision Coach</h1>
+  <p class="muted">
+    Practice real workplace decisions involving time management, stress, communication,
+    career growth, interviewing, professionalism, and networking.
+  </p>
+
+  <div class="grid3">
+    <div class="mini"><strong>8</strong><br><span class="muted">Scenarios</span></div>
+    <div class="mini"><strong>4</strong><br><span class="muted">Skill areas</span></div>
+    <div class="mini"><strong>Instant</strong><br><span class="muted">Feedback</span></div>
+  </div>
+
+  <div class="instructions">
+    <h3>How to use the training</h3>
+    <ol>
+      <li>Read each workplace situation.</li>
+      <li>Choose the response you think is most professional.</li>
+      <li>Review the feedback and the Book 3 / Book 4 connection.</li>
+      <li>Finish all 8 scenarios to receive your skill breakdown and completion certificate.</li>
+    </ol>
+  </div>
+
+  <div class="objectives">
+    <div class="objective"><strong>Time & Stress</strong><br><span class="muted small">Plan, prioritize, and avoid burnout.</span></div>
+    <div class="objective"><strong>Communication</strong><br><span class="muted small">Be clear, assertive, and professional.</span></div>
+    <div class="objective"><strong>Career Growth</strong><br><span class="muted small">Learn from setbacks and prepare for opportunities.</span></div>
+    <div class="objective"><strong>Professionalism</strong><br><span class="muted small">Protect your reputation and build relationships.</span></div>
+  </div>
+
+  <label for="nameInput">Your name</label>
+  <input id="nameInput" maxlength="40" placeholder="Enter your name">
+  <button class="primary" style="margin-top:12px" onclick="begin()">Start Training</button>
+</section>
+
+<section id="quiz" class="hidden">
+  <div class="panel">
+    <div class="topline">
+      <span id="hello" class="pill"></span>
+      <span id="qCount" class="pill"></span>
+      <span id="liveScore" class="pill"></span>
+    </div>
+
+    <div class="progress"><div id="progressFill"></div></div>
+
+    <span id="bookTag" class="badge"></span>
+    <h2 id="title" style="margin-top:14px"></h2>
+    <p id="scenario" class="muted"></p>
+    <div id="choices"></div>
+
+    <div id="feedback" class="feedback">
+      <h3 id="fbHead"></h3>
+      <p id="fbText"></p>
+      <div id="concept" class="concept"></div>
+      <div id="why" class="why"></div>
+      <div id="correctAnswer" class="answerNote"></div>
+      <button id="nextBtn" class="primary" style="margin-top:14px" onclick="next()">Next Scenario</button>
+    </div>
+  </div>
+</section>
+
+<section id="results" class="hidden">
+  <div class="panel hero" style="text-align:center">
+    <span class="badge">Training Complete</span>
+    <h2 id="resultTitle" style="margin-top:14px"></h2>
+    <div id="finalPct" class="scoreBig"></div>
+    <p id="summary" class="muted"></p>
+
+    <div id="categoryGrid" class="resultGrid"></div>
+
+    <div class="panel coachBlock" style="text-align:left;margin:18px 0 0;background:#0c1527">
+      <h3>Coach Feedback</h3>
+      <p id="coachText" class="muted"></p>
+      <ul id="reviewList"></ul>
+      <div id="missedReview"></div>
+    </div>
+
+    <div class="certificate" id="certificate">
+      <div class="small muted">MKT 3200 Workplace Decision Coach</div>
+      <h2>Certificate of Completion</h2>
+      <div class="small muted">This certifies that</div>
+      <div id="certName" class="name"></div>
+      <div class="small muted">completed the workplace decision training with a score of</div>
+      <div id="certScore" class="certScore"></div>
+      <div id="certDate" class="small muted"></div>
+    </div>
+
+    <div class="actions">
+      <button class="secondary" onclick="window.print()">Print / Save Certificate</button>
+      <button class="primary" onclick="restart()">Restart Training</button>
+    </div>
+  </div>
+</section>
+
+<div class="footer">
+  MKT 3200 Group Project 2 • Interactive training based on Book 3 and Book 4 class concepts.
+</div>
+</div>
+
+<script>
+const items = [
+{
+ title:"Too Much to Do",
+ book:"Book 3 Ch. 2 + Book 4 Ch. 2",
+ area:"Time & Stress",
+ scenario:"You have three assignments due today. You keep switching between them, checking your phone, and getting more stressed. What is the best response?",
+ choices:[
+  "Keep multitasking so everything moves forward at once.",
+  "Make a to-do list, prioritize tasks, set deadlines, and reduce distractions.",
+  "Wait until the pressure becomes strong enough to motivate you."
+ ],
+ correct:1,
+ feedback:"Planning and prioritizing reduce wasted effort and help you work step-by-step instead of reacting to everything at once.",
+ concept:"Book 3 emphasizes planning, organization, discipline, and prioritization. Book 4 connects poor time management with burnout and missed deadlines.",
+ why:"Why it matters at work: missing priorities can lead to late work, preventable mistakes, and unnecessary stress. A simple plan helps protect both performance and reliability."
+},
+{
+ title:"Burnout Warning",
+ book:"Book 3 Ch. 2 + Book 4 Ch. 2",
+ area:"Time & Stress",
+ scenario:"You have been staying late, skipping breaks, sleeping poorly, and making more mistakes. What should you do?",
+ choices:[
+  "Keep pushing because longer hours always mean higher productivity.",
+  "Review your workload, prioritize tasks, take appropriate breaks, and address the source of stress.",
+  "Ignore it until your manager says something."
+ ],
+ correct:1,
+ feedback:"Burnout reduces performance. Good self-management means recognizing warning signs and correcting the cause before performance gets worse.",
+ concept:"Book 3 teaches identifying stress sources and coping strategies. Book 4 lists burnout as a sign of poor time management.",
+ why:"Why it matters at work: chronic stress can affect judgment, attitude, accuracy, and relationships with coworkers. Managing stress supports consistent professional performance."
+},
+{
+ title:"Coworker Dumps Work on You",
+ book:"Book 3 Ch. 3 + Book 4 Ch. 2",
+ area:"Communication",
+ scenario:"A coworker repeatedly asks you to complete their work even though you have your own deadline. What is the strongest response?",
+ choices:[
+  "Fine, I guess I'll do it.",
+  "No. Do your own work and stop bothering me.",
+  "I can help with part of it, but I have my own deadline. If the full task must be finished, let's ask the manager to prioritize."
+ ],
+ correct:2,
+ feedback:"This response is direct without being disrespectful. You protect your own responsibilities while still trying to solve the problem.",
+ concept:"Book 4 defines assertiveness as expressing your rights without violating others' rights. Book 3 supports clear and considerate communication.",
+ why:"Why it matters at work: passive communication can create resentment, while aggressive communication damages relationships. Assertiveness protects boundaries and keeps the focus on solving the work problem."
+},
+{
+ title:"Vague Instructions",
+ book:"Book 3 Ch. 3 + Book 4 Ch. 3",
+ area:"Communication",
+ scenario:"Your manager says, 'Finish that customer report later.' You are unsure which report or what 'later' means. What should you do?",
+ choices:[
+  "Guess what the manager means so you do not look inexperienced.",
+  "Ask specific questions to confirm the report, deadline, and required information.",
+  "Wait until the manager follows up."
+ ],
+ correct:1,
+ feedback:"Clarifying early prevents mistakes, wasted time, and frustration later.",
+ concept:"Book 3 stresses clear, logical communication. Book 4 says professionals should not assume; they should ask questions to avoid misunderstandings.",
+ why:"Why it matters at work: one short clarification can prevent hours of rework. Clear communication improves accuracy, efficiency, and trust."
+},
+{
+ title:"Promotion Rejection",
+ book:"Book 3 Ch. 1 + Book 4 Ch. 2",
+ area:"Career Growth",
+ scenario:"You apply for a promotion and are told you need more leadership experience. What is the strongest next move?",
+ choices:[
+  "Stop applying because management clearly does not value you.",
+  "Ask for feedback, volunteer to lead a smaller project, and build proof of improvement.",
+  "Complain to coworkers about the decision."
+ ],
+ correct:1,
+ feedback:"Use the setback as information. Feedback plus a development plan makes the rejection useful.",
+ concept:"Book 3 says failure is an event, not a person. Book 4 encourages more responsibility, continual learning, and preparation for promotion.",
+ why:"Why it matters at work: career growth depends on adapting after setbacks. Turning feedback into measurable improvement makes you more prepared for the next opportunity."
+},
+{
+ title:"Before the Interview",
+ book:"Book 3 Ch. 3 + Book 4 Ch. 1",
+ area:"Career Growth",
+ scenario:"You have a job interview tomorrow. Which preparation is strongest?",
+ choices:[
+  "Research the company, practice common questions, prepare questions to ask, and connect your skills to the role.",
+  "Just be yourself. Preparation can make you sound rehearsed.",
+  "Focus mostly on asking about salary and time off."
+ ],
+ correct:0,
+ feedback:"Research and practice make your answers more confident, specific, and relevant.",
+ concept:"Book 4 emphasizes company research, prepared questions, and interview practice. Book 3 says confident speaking depends heavily on preparation.",
+ why:"Why it matters at work: an interview is a professional communication situation. Preparation helps you explain your value clearly and show genuine interest in the employer."
+},
+{
+ title:"Office Gossip",
+ book:"Book 3 Ch. 1 + Book 4 Ch. 3",
+ area:"Professionalism",
+ scenario:"A coworker tells you about another employee's mistake and asks you to keep the gossip going. What is the most professional response?",
+ choices:[
+  "Share it only with people you trust.",
+  "Stay out of the gossip and encourage addressing the issue directly with the person involved.",
+  "Post it in the group chat so everyone knows."
+ ],
+ correct:1,
+ feedback:"Gossip damages trust and reputation. Professional conduct focuses on solving problems directly.",
+ concept:"Book 3 links rumors and bad-mouthing with a bad attitude. Book 4 warns that backstabbing and bad-mouthing damage reputation and professional networks.",
+ why:"Why it matters at work: reputation is built over time. Even small gossip habits can make coworkers less willing to trust, recommend, or work closely with you."
+},
+{
+ title:"Networking Opportunity",
+ book:"Book 3 Ch. 1 + Book 4 Ch. 1 & 3",
+ area:"Professionalism",
+ scenario:"You meet someone working in a field you want to enter. What is the best networking approach?",
+ choices:[
+  "Immediately ask them to get you a job.",
+  "Introduce yourself, ask thoughtful questions, exchange information, follow up, and look for ways to be helpful too.",
+  "Avoid talking to them because networking should only happen after graduation."
+ ],
+ correct:1,
+ feedback:"Professional networking is relationship-building, not simply asking people for favors.",
+ concept:"Book 3 recommends following leads and staying in touch. Book 4 describes networking as give-and-take and encourages maintaining professional contacts.",
+ why:"Why it matters at work: strong networks can lead to information, mentorship, referrals, and opportunities, but useful professional relationships are built before you urgently need help."
+}
+];
+
+let idx=0,score=0,userName="Student";
+const areaStats={};
+const missed=[];
+
+function begin(){
+  const n=document.getElementById("nameInput").value.trim();
+  userName=n || "Student";
+  idx=0;score=0;missed.length=0;
+  for(const x of items) areaStats[x.area]={correct:0,total:0};
+  document.getElementById("start").classList.add("hidden");
+  document.getElementById("results").classList.add("hidden");
+  document.getElementById("quiz").classList.remove("hidden");
+  render();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function render(){
+  const x=items[idx];
+  document.getElementById("hello").textContent=userName;
+  document.getElementById("qCount").textContent=`Scenario ${idx+1} / ${items.length}`;
+  document.getElementById("liveScore").textContent=`Score ${score}`;
+  document.getElementById("progressFill").style.width=`${(idx/items.length)*100}%`;
+  document.getElementById("bookTag").textContent=x.book;
+  document.getElementById("title").textContent=x.title;
+  document.getElementById("scenario").textContent=x.scenario;
+
+  const c=document.getElementById("choices");
+  c.innerHTML="";
+  x.choices.forEach((t,i)=>{
+    const b=document.createElement("button");
+    b.className="choice";
+    b.textContent=t;
+    b.onclick=()=>answer(i,b);
+    c.appendChild(b);
+  });
+
+  document.getElementById("feedback").classList.remove("show");
+}
+
+function answer(choice,btn){
+  const x=items[idx];
+  const buttons=[...document.querySelectorAll(".choice")];
+  buttons.forEach((b,i)=>{
+    b.disabled=true;
+    if(i===x.correct)b.classList.add("correct");
+  });
+
+  areaStats[x.area].total++;
+
+  if(choice===x.correct){
+    score++;
+    areaStats[x.area].correct++;
+    document.getElementById("fbHead").textContent="Strong choice ✓";
+  }else{
+    btn.classList.add("wrong");
+    missed.push({title:x.title,area:x.area,correct:x.choices[x.correct]});
+    document.getElementById("fbHead").textContent="Not the strongest workplace response";
+  }
+
+  document.getElementById("liveScore").textContent=`Score ${score}`;
+  document.getElementById("fbText").textContent=x.feedback;
+  document.getElementById("concept").innerHTML=`<strong>Textbook connection:</strong> ${x.concept}`;
+  document.getElementById("why").innerHTML=`<strong>${x.why.split(":")[0]}:</strong>${x.why.substring(x.why.indexOf(":")+1)}`;
+  document.getElementById("correctAnswer").textContent=`Best response: ${x.choices[x.correct]}`;
+  document.getElementById("feedback").classList.add("show");
+  document.getElementById("nextBtn").textContent=idx===items.length-1?"View Results":"Next Scenario";
+}
+
+function next(){
+  idx++;
+  if(idx<items.length){
+    render();
+    window.scrollTo({top:0,behavior:"smooth"});
+  }else{
+    showResults();
+  }
+}
+
+function showResults(){
+  document.getElementById("quiz").classList.add("hidden");
+  document.getElementById("results").classList.remove("hidden");
+
+  const pct=Math.round(score/items.length*100);
+  document.getElementById("finalPct").textContent=`${pct}%`;
+  document.getElementById("resultTitle").textContent=`${userName}, here's your result`;
+
+  let msg="";
+  if(pct>=88) msg="Excellent workplace judgment. Your choices consistently matched the professional practices taught in Books 3 and 4.";
+  else if(pct>=70) msg="Solid performance. You understand most of the concepts, with a few areas worth reviewing.";
+  else msg="Good start. Review the concepts below and try again to strengthen your workplace decision-making.";
+  document.getElementById("summary").textContent=msg;
+
+  const grid=document.getElementById("categoryGrid");
+  grid.innerHTML="";
+  let weakest=null,weakPct=101;
+
+  Object.entries(areaStats).forEach(([area,s])=>{
+    const p=s.total?Math.round(s.correct/s.total*100):0;
+    if(p<weakPct){weakPct=p;weakest=area}
+    const d=document.createElement("div");
+    d.className="stat";
+    d.innerHTML=`<strong>${area}</strong><div class="muted">${s.correct}/${s.total} correct</div><div class="bar"><div style="width:${p}%"></div></div>`;
+    grid.appendChild(d);
+  });
+
+  const tips={
+    "Time & Stress":["Plan before reacting.","Prioritize important tasks.","Address stress before it becomes burnout."],
+    "Communication":["Be clear, direct, and considerate.","Ask questions instead of assuming.","Use assertive—not passive or aggressive—language."],
+    "Career Growth":["Treat setbacks as information.","Ask for feedback and build proof of improvement.","Prepare before interviews and promotion opportunities."],
+    "Professionalism":["Protect your reputation.","Avoid gossip and bad office politics.","Treat networking as a long-term give-and-take relationship."]
+  };
+
+  const coach=document.getElementById("coachText");
+  const list=document.getElementById("reviewList");
+  list.innerHTML="";
+
+  if(pct===100){
+    coach.textContent="You showed strong judgment across every category.";
+    ["Keep practicing these responses in real workplace situations.","Use the app as a quick review before the class presentation."].forEach(t=>{
+      const li=document.createElement("li");li.textContent=t;list.appendChild(li);
+    });
+  }else{
+    coach.textContent=`Your main review area is ${weakest}.`;
+    tips[weakest].forEach(t=>{
+      const li=document.createElement("li");li.textContent=t;list.appendChild(li);
+    });
+  }
+
+  const missedWrap=document.getElementById("missedReview");
+  missedWrap.innerHTML="";
+  if(missed.length){
+    const h=document.createElement("h3");
+    h.style.marginTop="16px";
+    h.textContent="Review missed scenarios";
+    missedWrap.appendChild(h);
+    missed.forEach(m=>{
+      const d=document.createElement("div");
+      d.className="reviewCard";
+      d.innerHTML=`<strong>${m.title}</strong><div class="muted small">${m.area}</div><div class="small" style="margin-top:6px">Best response: ${m.correct}</div>`;
+      missedWrap.appendChild(d);
+    });
+  }
+
+  document.getElementById("certName").textContent=userName;
+  document.getElementById("certScore").textContent=`${pct}%`;
+  document.getElementById("certDate").textContent=`Completed ${new Date().toLocaleDateString(undefined,{year:"numeric",month:"long",day:"numeric"})}`;
+  document.getElementById("progressFill").style.width="100%";
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function restart(){
+  document.getElementById("results").classList.add("hidden");
+  document.getElementById("start").classList.remove("hidden");
+  document.getElementById("nameInput").value=userName==="Student"?"":userName;
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+</script>
+</body>
+</html>
